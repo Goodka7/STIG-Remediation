@@ -1,0 +1,46 @@
+<#
+.SYNOPSIS
+    This PowerShell script ensures that the maximum size of the Windows Application event log is at least 32768 KB (32 MB).
+
+.NOTES
+    Author          : James Harrington
+    LinkedIn        : linkedin.com/in/goodk47/
+    GitHub          : github.com/goodka7
+    Date Created    : 2025-01-21
+    Last Modified   : 2025-01-21
+    Version         : 1.0
+    CVEs            : N/A
+    Plugin IDs      : N/A
+    STIG-ID         : WN10-AU-000500
+
+.TESTED ON
+    Date(s) Tested  : 2025-01-21
+    Tested By       : goodka7
+    Systems Tested  : Windows 10
+    PowerShell Ver. : Major  Minor  Build  Revision
+                      -----  -----  -----  --------
+                          5      1  19041      5369    
+
+.USAGE
+    Put any usage instructions here.
+    Example syntax:
+    PS C:\Users\labuser\desktop\(STIG-ID-WN10-AU-000500).ps1 
+#>
+
+# YOUR CODE GOES HERE
+
+# Define the registry path and value
+$regPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\EventLog\Application"
+$regValueName = "MaxSize"
+$regValue = 32768  # Set to 32768 KB or greater
+
+# Check if the registry path exists, create it if necessary
+if (-not (Test-Path $regPath)) {
+    Write-Host "Registry path does not exist. Creating path..."
+    New-Item -Path $regPath -Force
+}
+
+# Set the MaxSize registry value to the desired size
+Set-ItemProperty -Path $regPath -Name $regValueName -Value $regValue -Type DWord
+
+Write-Host "MaxSize registry key has been set to $regValue KB."
