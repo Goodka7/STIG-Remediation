@@ -14,17 +14,15 @@
     STIG-ID         : WN10-AU-000500
 
 .TESTED ON
-    Date(s) Tested  : 2025-01-21
-    Tested By       : goodka7
-    Systems Tested  : Windows 10
-    PowerShell Ver. : Major  Minor  Build  Revision
-                      -----  -----  -----  --------
-                          5      1  19041      5369    
+    Date(s) Tested  : 
+    Tested By       : 
+    Systems Tested  : 
+    PowerShell Ver. :   
 
 .USAGE
     Put any usage instructions here.
     Example syntax:
-    PS C:\Users\labuser\desktop\(STIG-ID-WN10-AU-000500).ps1 
+    PS C:\> .\WN10-AU-000500.ps1 
 #>
 
 # YOUR CODE GOES HERE
