@@ -27,18 +27,10 @@
 
 # YOUR CODE GOES HERE
 
-# Define the registry path and value
-$regPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\EventLog\Application"
-$regValueName = "MaxSize"
-$regValue = 32768  # Set to 32768 KB or greater
+# Create or modify the registry key for the Application event log max size
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\EventLog\Application" -Force
 
-# Check if the registry path exists, create it if necessary
-if (-not (Test-Path $regPath)) {
-    Write-Host "Registry path does not exist. Creating path..."
-    New-Item -Path $regPath -Force
-}
+# Set the MaxSize value to 32,768 (0x00008000)
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\EventLog\Application" -Name "MaxSize" -Value 32768 -Type DWord
 
-# Set the MaxSize registry value to the desired size
-Set-ItemProperty -Path $regPath -Name $regValueName -Value $regValue -Type DWord
-
-Write-Host "MaxSize registry key has been set to $regValue KB."
+# May need to run the second command seperately, sometimes PowerShell doesn't like to do both of them at once so the MaxSize value wont change.
