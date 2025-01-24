@@ -11,7 +11,7 @@
     Version         : 1.0
     CVEs            : N/A
     Plugin IDs      : N/A
-    STIG-ID         : WN10-CC-000005
+    STIG-ID         : WN10-CC-000205
 
 .TESTED ON
     Date(s) Tested  : 
@@ -22,8 +22,9 @@
 .USAGE
     Put any usage instructions here.
     Example syntax:
-    PS C:\> .\WN10-CC-000005.ps1 
+    PS C:\> .\WN10-CC-000205.ps1 
 #>
+
 # Create or modify the registry key for the Windows Telemetry setting
 New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection" -Force
 
