@@ -25,20 +25,16 @@
     PS C:\> .\WN10-CC-000005.ps1 
 #>
 
-# YOUR CODE GOES HERE
+#Create or modify the registry key for the lock screen camera policy
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Personalization" -Force
 
-# Define the registry path, value name, and expected value
-$registryPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Personalization"
-$valueName = "NoLockScreenCamera"
-$expectedValue = 1
-
-# Set the registry value to disable camera access on the lock screen
-Set-ItemProperty -Path $registryPath -Name $valueName -Value $expectedValue -Type DWord
+# Set the NoLockScreenCamera value to 1 (disable camera access from the lock screen)
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Personalization" -Name "NoLockScreenCamera" -Value 1 -Type DWord
 
 # Verify the setting
-$currentValue = Get-ItemProperty -Path $registryPath -Name $valueName | Select-Object -ExpandProperty $valueName
-if ($currentValue -eq $expectedValue) {
-    Write-Output "The registry value has been successfully configured."
+$currentValue = Get-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Personalization" -Name "NoLockScreenCamera" | Select-Object -ExpandProperty NoLockScreenCamera
+if ($currentValue -eq 1) {
+    Write-Output "The registry value has been successfully configured to disable the lock screen camera."
 } else {
-    Write-Output "Failed to configure the registry value."
+    Write-Output "Failed to configure the registry value. Please check permissions or registry path."
 }
