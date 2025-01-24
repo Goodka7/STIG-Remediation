@@ -1,0 +1,43 @@
+<#
+.SYNOPSIS
+    This PowerShell script ensures that the maximum size of the Windows Application event log is at least 32768 KB (32 MB).
+
+.NOTES
+    Author          : James Harrington
+    LinkedIn        : linkedin.com/in/goodk47/
+    GitHub          : github.com/goodka7
+    Date Created    : 2025-01-24
+    Last Modified   : 2025-01-24
+    Version         : 1.0
+    CVEs            : N/A
+    Plugin IDs      : N/A
+    STIG-ID         : WN10-CC-000005
+
+.TESTED ON
+    Date(s) Tested  : 
+    Tested By       : 
+    Systems Tested  : 
+    PowerShell Ver. :   
+
+.USAGE
+    Put any usage instructions here.
+    Example syntax:
+    PS C:\> .\WN10-CC-000005.ps1 
+#>
+
+# Create or modify the registry key for disabling the Inventory Collector
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppCompat" -Force
+
+# Set the DisableInventory value to 1 (turn off Inventory Collector)
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppCompat" -Name "DisableInventory" -Value 1 -Type DWord
+
+# Verify the setting
+$registryPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppCompat"
+$valueName = "DisableInventory"
+
+$currentValue = Get-ItemProperty -Path $registryPath -Name $valueName -ErrorAction SilentlyContinue | Select-Object -ExpandProperty $valueName
+if ($currentValue -eq 1) {
+    Write-Output "The registry value '$valueName' is correctly configured to disable Inventory Collector (1)."
+} else {
+    Write-Output "The registry value '$valueName' is not correctly configured. Current value: $currentValue. Expected: 1."
+}
