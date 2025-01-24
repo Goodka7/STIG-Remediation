@@ -22,7 +22,7 @@
 .USAGE
     Put any usage instructions here.
     Example syntax:
-    PS C:\> .\WN10-CC-000005.ps1 
+    PS C:\> .\WN10-CC-000052.ps1 
 #>
 
 # Create or modify the registry key for ECC curve order
