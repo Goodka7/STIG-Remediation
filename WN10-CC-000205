@@ -1,0 +1,44 @@
+<#
+.SYNOPSIS
+    This PowerShell script ensures that the maximum size of the Windows Application event log is at least 32768 KB (32 MB).
+
+.NOTES
+    Author          : James Harrington
+    LinkedIn        : linkedin.com/in/goodk47/
+    GitHub          : github.com/goodka7
+    Date Created    : 2025-01-24
+    Last Modified   : 2025-01-24
+    Version         : 1.0
+    CVEs            : N/A
+    Plugin IDs      : N/A
+    STIG-ID         : WN10-CC-000005
+
+.TESTED ON
+    Date(s) Tested  : 
+    Tested By       : 
+    Systems Tested  : 
+    PowerShell Ver. :   
+
+.USAGE
+    Put any usage instructions here.
+    Example syntax:
+    PS C:\> .\WN10-CC-000005.ps1 
+#>
+# Create or modify the registry key for the Windows Telemetry setting
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection" -Force
+
+# Set the AllowTelemetry value to 0 (Security) or 1 (Basic) to comply with the STIG
+# Change the value to 2 (Enhanced) only if explicitly required for Windows Analytics
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection" -Name "AllowTelemetry" -Value 0 -Type DWord
+
+# Verify the setting
+$currentValue = Get-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection" -Name "AllowTelemetry" | Select-Object -ExpandProperty AllowTelemetry
+if ($currentValue -eq 0) {
+    Write-Output "The registry value has been successfully configured to Security (0)."
+} elseif ($currentValue -eq 1) {
+    Write-Output "The registry value has been successfully configured to Basic (1)."
+} elseif ($currentValue -eq 2) {
+    Write-Output "The registry value has been successfully configured to Enhanced (2). Ensure this setting complies with V-220833."
+} else {
+    Write-Output "Failed to configure the registry value. Current value: $currentValue. Please check permissions or registry path."
+}
