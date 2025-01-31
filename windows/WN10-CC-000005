@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Configures the lock screen camera policy by modifying the registry to disable camera access from the Windows lock screen.
+    This PowerShell script configures the lock screen camera policy by modifying the registry to disable camera access from the Windows lock screen.
 
 .NOTES
     Author          : James Harrington
