@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-   This PowerShell script configures BitLocker advanced startup settings by modifying registry values to enforce TPM and PIN-based authentication.
+    This PowerShell script configures BitLocker advanced startup settings by modifying registry values to enforce TPM and PIN-based authentication.
 
 .NOTES
     Author          : James Harrington
