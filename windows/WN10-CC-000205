@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    This PowerShell script ensures that the maximum size of the Windows Application event log is at least 32768 KB (32 MB).
+    This PowerShell script configures the Windows Telemetry setting by modifying the registry to enforce Security (0) or Basic (1) data collection levels.
 
 .NOTES
     Author          : James Harrington
