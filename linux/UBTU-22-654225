@@ -54,7 +54,11 @@ echo "Reloading audit rules..."
 sudo augenrules --load
 
 # Verify the rule is active
-echo "Verifying applied audit rules...
-sudo auditctl -l | grep sudoers.d || echo "Warning: Rule not found in auditctl output!"
+echo "Verifying applied audit rules..."
+if ! sudo auditctl -l | grep -q "sudoers.d"; then
+    echo "Warning: Rule not found in auditctl output!"
+else
+    echo "Audit rule is active."
+fi
 
 echo "Remediation complete: Ubuntu now generates audit logs for modifications to /etc/sudoers.d."
