@@ -32,7 +32,7 @@ SUDOERS_DIR="/etc/sudoers.d"
 # Function to remove occurrences of "NOPASSWD" or "!authenticate"
 remove_insecure_entries() {
     local file="$1"
-    if sudo grep -Eiq '(nopasswd|!authenticate)' "$file"; then
+    if sudo grep -i 'nopasswd\|!authenticate' "$file" >/dev/null 2>&1; then
         echo "Removing insecure sudo permissions in: $file"
         sudo sed -i -E '/(NOPASSWD|!authenticate)/d' "$file"
     fi
@@ -48,6 +48,6 @@ done
 
 # Verify the fix
 echo "Verifying sudoers configuration..."
-sudo grep -Ei '(nopasswd|!authenticate)' /etc/sudoers /etc/sudoers.d/* || echo "No insecure sudo permissions found."
+sudo grep -i 'nopasswd\|!authenticate' /etc/sudoers /etc/sudoers.d/* || echo "No insecure sudo permissions found."
 
 echo "Remediation complete: Users must now reauthenticate for privilege escalation."
