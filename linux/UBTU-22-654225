@@ -25,37 +25,36 @@
 
 #!/bin/bash
 
-# Define sudoers files
-SUDOERS_MAIN="/etc/sudoers"
-SUDOERS_DIR="/etc/sudoers.d"
+AUDIT_RULES_FILE="/etc/audit/rules.d/stig.rules"
+RULE="-w /etc/sudoers.d -p wa -k privilege_modification"
 
-# Function to remove occurrences of "NOPASSWD" or "!authenticate"
-remove_insecure_entries() {
-    local file="$1"
-    if sudo grep -i 'nopasswd\|!authenticate' "$file" >/dev/null 2>&1; then
-        echo "Removing insecure sudo permissions in: $file"
-        sudo sed -i -E '/(NOPASSWD|!authenticate)/d' "$file"
-    fi
-}
-
-# Ensure no "NOPASSWD" or "!authenticate" exists in /etc/sudoers
-remove_insecure_entries "$SUDOERS_MAIN"
-
-# Ensure no "NOPASSWD" or "!authenticate" exists in /etc/sudoers.d/*
-if [ -d "$SUDOERS_DIR" ] && [ "$(ls -A "$SUDOERS_DIR")" ]; then
-    for sudo_file in "$SUDOERS_DIR"/*; do
-        [ -f "$sudo_file" ] && remove_insecure_entries "$sudo_file"
-    done
-else
-    echo "No files found in /etc/sudoers.d/ to check."
+# Ensure auditd is installed
+if ! dpkg -l | grep -q auditd; then
+    echo "Installing auditd..."
+    sudo apt update && sudo apt install -y auditd
 fi
 
-# Verify the fix
-echo "Verifying sudoers configuration..."
-if [ -d "$SUDOERS_DIR" ] && [ "$(ls -A "$SUDOERS_DIR")" ]; then
-    sudo find "$SUDOERS_DIR" -type f -exec grep -i 'nopasswd\|!authenticate' {} + || echo "No insecure sudo permissions found."
-else
-    sudo grep -i 'nopasswd\|!authenticate' "$SUDOERS_MAIN" || echo "No insecure sudo permissions found."
+# Ensure the audit rules file exists
+if [ ! -e "$AUDIT_RULES_FILE" ]; then
+    echo "Creating audit rules file: $AUDIT_RULES_FILE"
+    sudo touch "$AUDIT_RULES_FILE"
+    sudo chmod 640 "$AUDIT_RULES_FILE"
 fi
 
-echo "Remediation complete: Users must now reauthenticate for privilege escalation."
+# Add the rule if it does not exist
+if ! sudo grep --fixed-strings --quiet -- "$RULE" "$AUDIT_RULES_FILE"; then
+    echo "Adding audit rule for /etc/sudoers.d modifications..."
+    echo "$RULE" | sudo tee -a "$AUDIT_RULES_FILE"
+else
+    echo "Audit rule for /etc/sudoers.d modifications already exists."
+fi
+
+# Reload audit rules
+echo "Reloading audit rules..."
+sudo augenrules --load
+
+# Verify the rule is active
+echo "Verifying applied audit rules..."
+sudo auditctl -l | grep sudoers.d || echo "Warning: Rule not found in auditctl output!"
+
+echo "Remediation complete: Ubuntu now generates audit logs for modifications to /etc/sudoers.d."
